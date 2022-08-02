@@ -1,29 +1,39 @@
 export const getUserCard = (user) => {
-  //   console.log(user);
+  const {
+    name: { first, last, title },
+    phone,
+    email,
+    picture: { large, medium, thumbnail },
+    location: { country, city },
+  } = user;
+
   return `<li class='slide'>
     <div class='card'>
       <picture class='card__image'>
+      <source
+      srcset=${medium}
+      media='(min-width: 40em)'
+    />
         <source
-          srcset='https://via.placeholder.com/150'
+          srcset=${large}
           media='(min-width: 75em)'
         />
-        <source
-          srcset='https://via.placeholder.com/150'
-          media='(min-width: 40em)'
-        />
         <img
-          src='https://via.placeholder.com/150'
+          src=${thumbnail}
           alt='A description of the image.'
-          width='100'
-          height='100'
+          width='72'
+          height='72'
           loading='lazy'
           decoding='async'
         />
       </picture>
-      <div>Darth Vader</div>
-      <div>thisisamail@gmail.com</div>
-      <div>69827273636</div>
-      <div>Athens Greece</div>
+      <div class="card__name">${title} ${first} ${last}</div>
+
+      <div class="card__info">
+        <div>${email}</div>
+        <div>${phone}</div>
+      <div>${city}, ${country}</div>
+      </div>
     </div>
   </li>`;
 };

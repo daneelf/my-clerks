@@ -8,7 +8,7 @@ export const responsiveIndicators = {
     breakpoint: 1024,
   },
   tablet: {
-    indicator: 3,
-    breakpoint: 768,
+    indicator: 2,
+    breakpoint: 576,
   },
 };

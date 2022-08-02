@@ -4,7 +4,7 @@ export const getShouldFetchIndicator = () => {
   const windowSize = window.innerWidth;
 
   // mobile
-  if (windowSize <= responsiveIndicators.mobile.breakpoint) {
+  if (windowSize <= responsiveIndicators.tablet.breakpoint) {
     return responsiveIndicators.mobile.indicator;
   }
 

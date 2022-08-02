@@ -1,10 +1,11 @@
 import { fetchUsers } from './api/users';
 import { getUserCard } from './components/Card/index';
+import { getShouldFetchIndicator } from './utils/shouldFetch';
 
 let initialState = {};
 let slidesContainerLength =
   document.getElementsByClassName('slides-container').childElementCount;
-const shouldFetchIndicator = 2;
+
 let slidesIndex = 0;
 let shouldFetch = false;
 const slidesContainer = document.getElementById('slides-container');
@@ -29,6 +30,7 @@ const renderSlides = () => {
 nextButton.addEventListener('click', async () => {
   let page = currentPage + 1;
   slidesIndex++;
+  const shouldFetchIndicator = getShouldFetchIndicator();
 
   if (slidesIndex === shouldFetchIndicator) {
     const { results, info } = await fetchUsers(6, page);

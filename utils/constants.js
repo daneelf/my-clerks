@@ -15,3 +15,10 @@ export const responsiveIndicators = {
     slides: 3,
   },
 };
+
+export const themeColors = {
+  pink: '#f8cbf5',
+  purple: '#c8cfff',
+  grey: '#c2c2c2',
+  yellow: '#f9ffca',
+};

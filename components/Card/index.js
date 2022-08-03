@@ -1,4 +1,10 @@
+import { getSkeletonLoader } from '../SkeletonLoader';
+
 export const getUserCard = (user) => {
+  if (!user) {
+    return getSkeletonLoader();
+  }
+
   const {
     name: { first, last, title },
     phone,
@@ -35,5 +41,6 @@ export const getUserCard = (user) => {
       <div>${city}, ${country}</div>
       </div>
     </div>
-  </li>`;
+    </li>
+  `;
 };

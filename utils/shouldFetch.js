@@ -5,17 +5,17 @@ export const getShouldFetchIndicator = () => {
 
   // mobile
   if (windowSize <= responsiveIndicators.tablet.breakpoint) {
-    return responsiveIndicators.mobile.indicator;
+    return responsiveIndicators.mobile;
   }
 
   // tablet
   if (windowSize >= responsiveIndicators.tablet.breakpoint) {
-    return responsiveIndicators.tablet.indicator;
+    return responsiveIndicators.tablet;
   }
 
   // desktop
   if (windowSize >= responsiveIndicators.desktop.breakpoint) {
-    return responsiveIndicators.desktop.indicator;
+    return responsiveIndicators.desktop;
   }
 
   return 'whatever';

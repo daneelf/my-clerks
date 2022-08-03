@@ -1,56 +1,69 @@
 import { fetchUsers } from './api/users';
 import { getUserCard } from './components/Card/index';
 import { getShouldFetchIndicator } from './utils/shouldFetch';
-
+import { getSkeletonLoader } from './components/SkeletonLoader';
+import { getErrorMessage } from './components/Error';
 let initialState = {};
+let currentPage = 0;
+let slides = [];
 let slidesContainerLength =
   document.getElementsByClassName('slides-container').childElementCount;
 
 let slidesIndex = 0;
-let shouldFetch = false;
 const slidesContainer = document.getElementById('slides-container');
 const prevButton = document.getElementById('slide-arrow-prev');
 const nextButton = document.getElementById('slide-arrow-next');
 
-// TODO: can I use await alone?
-const { results, info } = await fetchUsers(6);
-initialState = { ...initialState, results, info };
-let currentPage = info.page;
+slidesContainer.appendChild = '<div>hellooooo</div>'; //renderLoader(3);
+console.log(slidesContainer);
 
-let slidesData = [...results];
+const renderLoader = (n) => {
+  return [...Array(n)].map(() => getSkeletonLoader()).join('');
+};
 
-const addSlides = (data) => {
-  slidesData = [...slidesData, ...data];
+const initialFetchSlidesData = async () => {
+  try {
+    const response = await fetchUsers(6);
+    const { results, info } = response;
+    initialState = { ...initialState, results, info };
+    currentPage = info.page;
+    slides = results;
+  } catch (error) {
+    console.log(error);
+    slidesContainer.innerHTML = getErrorMessage();
+  }
+  slidesContainer.innerHTML = renderSlides();
 };
 
 const renderSlides = () => {
-  return slidesData.map((slide) => getUserCard(slide)).join('');
+  return slides.map((userData) => getUserCard(userData)).join('');
 };
 
 nextButton.addEventListener('click', async () => {
-  let page = currentPage + 1;
-  slidesIndex++;
   const shouldFetchIndicator = getShouldFetchIndicator();
 
-  if (slidesIndex === shouldFetchIndicator) {
+  let page = currentPage + 1;
+  slidesIndex++;
+
+  if (slidesIndex === shouldFetchIndicator.indicator) {
+    slidesContainer.innerHTML = renderLoader(shouldFetchIndicator.slides);
     const { results, info } = await fetchUsers(6, page);
-    addSlides(results);
-    const newSlides = renderSlides();
-    slidesContainer.insertAdjacentHTML('beforeend', newSlides);
+    slidesContainer.insertAdjacentHTML(
+      'beforeend',
+      results.map((userData) => getUserCard(userData)).join(''),
+    );
     currentPage = info.page;
     slidesIndex = 0;
   }
 
-  // const slideWidth = slide.clientWidth * 3;
   const slideWidth = slidesContainer.clientWidth;
   slidesContainer.scrollLeft += slideWidth;
 });
 
 prevButton.addEventListener('click', () => {
-  // const slide = document.querySelector('.slide');
-  // const slideWidth = slide.clientWidth * 3;
+  slidesIndex--;
   const slideWidth = slidesContainer.clientWidth;
   slidesContainer.scrollLeft -= slideWidth;
 });
 
-slidesContainer.innerHTML = renderSlides();
+initialFetchSlidesData();

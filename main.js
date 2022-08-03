@@ -8,9 +8,6 @@ import { applyTheme } from './utils/applyTheme';
 let initialState = {};
 let currentPage = 0;
 let slides = [];
-let slidesContainerLength =
-  document.getElementsByClassName('.slides-container').childElementCount;
-
 let slidesIndex = 0;
 
 const slidesContainer = document.getElementById('slides-container');
@@ -30,6 +27,8 @@ const renderLoader = (n) => {
 
 const initialFetchSlidesData = async () => {
   slidesContainer.innerHTML = renderLoader(3);
+  nextButton.setAttribute('disabled', '');
+  prevButton.setAttribute('disabled', '');
 
   const response = await fetchUsers(6);
   if (!response) {
@@ -41,6 +40,9 @@ const initialFetchSlidesData = async () => {
   slides = results;
 
   slidesContainer.innerHTML = renderSlides();
+
+  nextButton.removeAttribute('disabled');
+  prevButton.removeAttribute('disabled');
 };
 
 const renderSlides = () => {
@@ -52,9 +54,11 @@ nextButton.addEventListener('click', async () => {
 
   let page = currentPage + 1;
   slidesIndex++;
+
   if (slidesIndex === shouldFetchIndicator.indicator) {
     slidesContainer.innerHTML = renderLoader(shouldFetchIndicator.slides);
-
+    nextButton.setAttribute('disabled', '');
+    prevButton.setAttribute('disabled', '');
     const { results, info } = await fetchUsers(6, page);
 
     slidesContainer.insertAdjacentHTML(
@@ -67,6 +71,8 @@ nextButton.addEventListener('click', async () => {
 
   const slideWidth = slidesContainer.clientWidth;
   slidesContainer.scrollLeft += slideWidth;
+  nextButton.removeAttribute('disabled');
+  prevButton.removeAttribute('disabled');
 });
 
 prevButton.addEventListener('click', () => {

@@ -59,12 +59,17 @@
   bottom: 0;
   margin: 0;
   padding: 0;
-  color: #a9a9a9;
+  color: #737373;
   background-color: transparent;
   border: none;
   width: 4rem;
-  font-size: 3rem;
+  font-size: 3.875rem;
   cursor: pointer;
+}
+
+.slide-arrow:disabled {
+  color: #acacac;
+  cursor: not-allowed;
 }
 
 #slide-arrow-prev {

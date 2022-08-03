@@ -10,7 +10,7 @@ export const fetchUsers = async (results, page = 1) => {
     return response.json();
   } catch (error) {
     console.log(error);
-    const element = document.querySelector('.slides-container');
+    const element = document.querySelector('.slides__container');
     element.innerHTML = getErrorMessage();
   }
 };

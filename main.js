@@ -5,7 +5,6 @@ import { getSkeletonLoader } from './components/SkeletonLoader';
 import { getErrorMessage } from './components/Error';
 import { applyTheme } from './utils/applyTheme';
 
-let initialState = {};
 let currentPage = 0;
 let slides = [];
 let slidesIndex = 0;
@@ -13,36 +12,53 @@ let slidesIndex = 0;
 const slidesContainer = document.getElementById('slides-container');
 const prevButton = document.getElementById('slide-arrow-prev');
 const nextButton = document.getElementById('slide-arrow-next');
-const selectElement = document.getElementById('theme__selector');
-
-const applyThemeOnLoad = () => {
-  let theme = localStorage.getItem('theme') || 'white';
-  selectElement.value = theme;
-  applyTheme(theme);
-};
+const selectElement = document.getElementById('theme-selector');
 
 const renderLoader = (n) => {
   return [...Array(n)].map(() => getSkeletonLoader()).join('');
 };
 
-const initialFetchSlidesData = async () => {
-  slidesContainer.innerHTML = renderLoader(3);
+const disableArrowButtons = () => {
   nextButton.setAttribute('disabled', '');
   prevButton.setAttribute('disabled', '');
+};
 
-  const response = await fetchUsers(6);
-  if (!response) {
-    slidesContainer.innerHTML = getErrorMessage();
-  }
+const enableArrowButtons = () => {
+  nextButton.removeAttribute('disabled');
+  prevButton.removeAttribute('disabled');
+};
+
+const fetchApiData = async (amount = 6, page = 1) => {
+  const response = await fetchUsers(amount, page);
+
   const { results, info } = response;
-  initialState = { ...initialState, results, info };
+  return {
+    results,
+    info,
+  };
+};
+
+const initialFetchSlidesData = async () => {
+  slidesContainer.innerHTML = renderLoader(3);
+  disableArrowButtons();
+
+  const { results, info } = await fetchApiData();
+
   currentPage = info.page;
   slides = results;
 
   slidesContainer.innerHTML = renderSlides();
+  enableArrowButtons();
+};
 
-  nextButton.removeAttribute('disabled');
-  prevButton.removeAttribute('disabled');
+const slideRight = () => {
+  const slideWidth = slidesContainer.clientWidth;
+  slidesContainer.scrollLeft += slideWidth;
+};
+
+const slideLeft = () => {
+  const slideWidth = slidesContainer.clientWidth;
+  slidesContainer.scrollLeft -= slideWidth;
 };
 
 const renderSlides = () => {
@@ -56,29 +72,27 @@ nextButton.addEventListener('click', async () => {
   slidesIndex++;
 
   if (slidesIndex === shouldFetchIndicator.indicator) {
-    slidesContainer.innerHTML = renderLoader(shouldFetchIndicator.slides);
-    nextButton.setAttribute('disabled', '');
-    prevButton.setAttribute('disabled', '');
-    const { results, info } = await fetchUsers(6, page);
+    disableArrowButtons();
+
+    const { results, info } = await fetchApiData(6, page);
 
     slidesContainer.insertAdjacentHTML(
       'beforeend',
-      results.map((userData) => getUserCard(userData)).join(''),
+      results?.map((userData) => getUserCard(userData)).join(''),
     );
-    currentPage = info.page;
+
+    currentPage = info?.page;
     slidesIndex = 0;
   }
 
-  const slideWidth = slidesContainer.clientWidth;
-  slidesContainer.scrollLeft += slideWidth;
-  nextButton.removeAttribute('disabled');
-  prevButton.removeAttribute('disabled');
+  slideRight();
+
+  enableArrowButtons();
 });
 
 prevButton.addEventListener('click', () => {
   slidesIndex--;
-  const slideWidth = slidesContainer.clientWidth;
-  slidesContainer.scrollLeft -= slideWidth;
+  slideLeft();
 });
 
 selectElement.addEventListener('change', (e) => {
@@ -86,6 +100,12 @@ selectElement.addEventListener('change', (e) => {
   applyTheme(theme);
   localStorage.setItem('theme', theme);
 });
+
+const applyThemeOnLoad = () => {
+  let theme = localStorage.getItem('theme') || 'white';
+  selectElement.value = theme;
+  applyTheme(theme);
+};
 
 applyThemeOnLoad();
 initialFetchSlidesData();

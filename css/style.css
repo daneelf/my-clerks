@@ -146,36 +146,6 @@
   margin-bottom: 0.5rem;
 }
 
-.card__skeleton {
-  background-color: white;
-}
-
-.skeleton {
-  animation: skeleton-loading 1s linear infinite alternate;
-}
-
-@keyframes skeleton-loading {
-  0% {
-    background-color: hsl(200, 20%, 80%);
-  }
-  100% {
-    background-color: hsl(200, 20%, 95%);
-  }
-}
-
-.skeleton__image {
-  border: none;
-  border-radius: 50%;
-  width: 4.5rem;
-  height: 4.5rem;
-}
-
-.skeleton__text {
-  width: 13.75rem;
-  height: 0.7rem;
-  border-radius: 0.25rem;
-}
-
 .theme__wrapper {
   display: flex;
   justify-content: center;

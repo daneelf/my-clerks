@@ -1,8 +1,6 @@
 import { fetchUsers } from './api/users';
 import { getUserCard } from './components/Card/index';
 import { getShouldFetchIndicator } from './utils/shouldFetch';
-import { getSkeletonLoader } from './components/SkeletonLoader';
-import { getErrorMessage } from './components/Error';
 import { applyTheme } from './utils/applyTheme';
 
 let currentPage = 0;
@@ -13,10 +11,7 @@ const slidesContainer = document.getElementById('slides-container');
 const prevButton = document.getElementById('slide-arrow-prev');
 const nextButton = document.getElementById('slide-arrow-next');
 const selectElement = document.getElementById('theme-selector');
-
-const renderLoader = (n) => {
-  return [...Array(n)].map(() => getSkeletonLoader()).join('');
-};
+const loader = document.getElementById('loader-wrapper');
 
 const disableArrowButtons = () => {
   nextButton.setAttribute('disabled', '');
@@ -39,7 +34,8 @@ const fetchApiData = async (amount = 6, page = 1) => {
 };
 
 const initialFetchSlidesData = async () => {
-  slidesContainer.innerHTML = renderLoader(3);
+  loader.style.visibility = 'visible';
+
   disableArrowButtons();
 
   const { results, info } = await fetchApiData();
@@ -48,6 +44,7 @@ const initialFetchSlidesData = async () => {
   slides = results;
 
   slidesContainer.innerHTML = renderSlides();
+  loader.style.visibility = 'hidden';
   enableArrowButtons();
 };
 
@@ -73,6 +70,7 @@ nextButton.addEventListener('click', async () => {
 
   if (slidesIndex === shouldFetchIndicator.indicator) {
     disableArrowButtons();
+    loader.style.visibility = 'visible';
 
     const { results, info } = await fetchApiData(6, page);
 
@@ -86,7 +84,7 @@ nextButton.addEventListener('click', async () => {
   }
 
   slideRight();
-
+  loader.style.visibility = 'hidden';
   enableArrowButtons();
 });
 

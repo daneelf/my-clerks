@@ -1,10 +1,4 @@
-import { getSkeletonLoader } from '../SkeletonLoader';
-
 export const getUserCard = (user) => {
-  if (!user) {
-    return getSkeletonLoader();
-  }
-
   const {
     name: { first, last, title },
     phone,
